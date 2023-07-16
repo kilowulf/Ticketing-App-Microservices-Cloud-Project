@@ -1,10 +1,10 @@
 apiVersion: skaffold/v4beta5
 kind: Config
 build:
-  googleCloudBuild:
-    projectId: ticketing-dev-388123 
+  #googleCloudBuild:
+  #projectId: ticketing-dev-388123
   artifacts:
-    - image: us.gcr.io/ticketing-dev-388123/auth 
+    - image: kilowulf/auth #us.gcr.io/ticketing-dev-388123/auth
       context: auth
       sync:
         manual:
