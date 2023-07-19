@@ -19,16 +19,29 @@ interface UserDoc extends mongoose.Document {
 }
 
 // define schema for User
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String, // refers to String class constructor
-    required: true
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String, // refers to String class constructor
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    }
   },
-  password: {
-    type: String,
-    required: true
+  {
+    // augments object on Stringify method
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      }
+    }
   }
-});
+);
 
 // integrate hash service for passwords passed for new Users
 userSchema.pre("save", async function (done) {
