@@ -10,5 +10,6 @@ export const requireAuth = (
     throw new NotAuthorizedError();
   }
 
+  // pass to next function
   next();
 };

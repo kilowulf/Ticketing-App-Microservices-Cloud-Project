@@ -1,5 +1,6 @@
 import { CustomError} from './custom-error';
 export class BadRequestError extends CustomError {
+  // bad request error code
   statusCode = 400;
 
   // Allow String to be passed in Error: BadRequestError('Email in use')

@@ -1,6 +1,7 @@
 import { CustomError } from "./custom-error";
 
 export class NotAuthorizedError extends CustomError {
+  // not authorized code
   statusCode = 401;
 
   constructor() {
