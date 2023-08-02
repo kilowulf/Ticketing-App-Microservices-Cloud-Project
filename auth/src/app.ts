@@ -10,11 +10,11 @@ import { signUpRouter } from "./routes/signup";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
 
-// 011 JWT Signing keys - issues getting https post to respond on postman or thunder client
-// 001 Scope of Testing
+// 009 Adding a Sign up form
 // remember to delete kubernetes cluster in google cloud console or you will pay for the service
 
 // Nextjs - server side rendering service / framework
+// Server Side Rendering (SSR): optimizes SEO performance
 
 const app = express();
 // ensure express aware of nginx proxy : trust https traffic
@@ -24,7 +24,7 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: false
+    secure: process.env.NODE_ENV != "test"
   })
 );
 // JSON Web token package

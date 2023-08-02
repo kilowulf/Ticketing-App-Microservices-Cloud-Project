@@ -1,9 +1,18 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import { ConnectOptions } from "mongoose";
-
+import request from "supertest";
 import { app } from "../app";
 
+// Define a custom interface for the global object
+declare global {
+  namespace NodeJS {
+    interface Global {
+      signup(): Promise<string[]>;
+    }
+  }
+}
+
+export const globalCustom: any = global;
 /**
  * MongoMemoryServer: allow for running instances for testing suites
  * - Direct Access to our MongoDB database
@@ -35,3 +44,20 @@ afterAll(async () => {
   await mongo.stop();
   await mongoose.connection.close();
 });
+
+// custom global function for providing validation cookie for testing
+globalCustom.signup = async () => {
+  const email = "test@test.com";
+  const password = "password";
+
+  const response = await request(app)
+    .post("/api/users/signup")
+    .send({
+      email,
+      password
+    })
+    .expect(201);
+
+  const cookie = response.get("Set-Cookie");
+  return cookie;
+};
