@@ -10,7 +10,7 @@ import { signUpRouter } from "./routes/signup";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
 
-// 009 Adding a Sign up form
+// 243 Reusable header
 // remember to delete kubernetes cluster in google cloud console or you will pay for the service
 
 // Nextjs - server side rendering service / framework
@@ -24,7 +24,7 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: process.env.NODE_ENV != "test"
+    secure: false //process.env.NODE_ENV != "test"
   })
 );
 // JSON Web token package
