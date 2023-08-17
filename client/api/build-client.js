@@ -2,9 +2,9 @@ import axios from "axios";
 
 /**build-client: helper function  which will create/pre-configure axios calls
  * - configure calls for either browser or server
- **/ 
+ **/
 
-export default ({ req }) => {
+const buildClient = ({ req }) => {
   if (typeof window === "undefined") {
     // We are on the server
 
@@ -21,3 +21,5 @@ export default ({ req }) => {
     });
   }
 };
+
+export default buildClient;

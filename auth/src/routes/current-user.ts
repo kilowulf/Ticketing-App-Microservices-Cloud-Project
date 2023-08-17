@@ -1,6 +1,5 @@
 import express from "express";
-import { currentUserSession } from "../middlewares/validate-current-user-session";
-import { requireAuth } from "../middlewares/require-auth";
+import { currentUserSession, requireAuth } from "@qtiks/common";
 
 /**
  * Current User:

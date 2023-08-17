@@ -1,6 +1,6 @@
 # dependencies
 
-node_modules
+auth/node_modules
 # testing
 /coverage
 

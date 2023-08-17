@@ -2,12 +2,13 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-
-import { currentUserRouter } from "./routes/current-user";
-import { signInRouter } from "./routes/signin";
-import { signOutRouter } from "./routes/signout";
-import { signUpRouter } from "./routes/signup";
 import { errorHandler, NotFoundError } from "@qtiks/common";
+
+// import { currentUserRouter } from "./routes/current-user";
+// import { signInRouter } from "./routes/signin";
+// import { signOutRouter } from "./routes/signout";
+// import { signUpRouter } from "./routes/signup";
+
 
 // 243 Reusable header
 // remember to delete kubernetes cluster in google cloud console or you will pay for the service
@@ -27,10 +28,10 @@ app.use(
   })
 );
 // JSON Web token package
-app.use(currentUserRouter);
-app.use(signInRouter);
-app.use(signOutRouter);
-app.use(signUpRouter);
+// app.use(currentUserRouter);
+// app.use(signInRouter);
+// app.use(signOutRouter);
+// app.use(signUpRouter);
 
 // Handle bad routes
 app.all("*", async (req, res, next) => {
