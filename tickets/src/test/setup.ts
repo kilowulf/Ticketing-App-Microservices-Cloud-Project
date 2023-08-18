@@ -2,12 +2,13 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../app";
+import jwt from "jsonwebtoken";
 
 // Define a custom interface for the global object
 declare global {
   namespace NodeJS {
     interface Global {
-      signup(): Promise<string[]>;
+      signin(): Promise<string[]>;
     }
   }
 }
@@ -46,18 +47,26 @@ afterAll(async () => {
 });
 
 // custom global function for providing validation cookie for testing
-globalCustom.signup = async () => {
-  const email = "test@test.com";
-  const password = "password";
+globalCustom.signin = async () => {
+  // build a JWT payload. {id, email}
+  const payload = {
+    id: "3t44t4gw3",
+    email: "test@test.com"
+  };
 
-  const response = await request(app)
-    .post("/api/users/signup")
-    .send({
-      email,
-      password
-    })
-    .expect(201);
+  // create JWT
+  const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-  const cookie = response.get("Set-Cookie");
-  return cookie;
+  // Build session object {jwt: MY_JWT}
+  const session = { jwt: token };
+
+  // Turn that session into JSON
+  const sessionJSON = JSON.stringify(session);
+
+  // Take JSON and encode it as base64
+  const base64 = Buffer.from(sessionJSON).toString("base64");
+
+  // return a string thats the cookie with the encoded data
+  // supertest requires cookies be contained within an array
+  return [`session=${base64}`];
 };

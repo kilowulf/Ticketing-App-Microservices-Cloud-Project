@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     // augments object on Stringify method
+    // manipulate / set what properties will be present when created
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
