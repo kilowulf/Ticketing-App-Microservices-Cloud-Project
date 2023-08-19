@@ -5,7 +5,9 @@ import mongoose from "mongoose";
 import { globalCustom } from "../../test/setup";
 
 it("returns a 404 if the ticket is not found", async () => {
+  // generate a authentic mongoose object id
   const id = new mongoose.Types.ObjectId().toHexString();
+  // pass id to request
   await request(app).get(`/api/tickets/${id}`).send().expect(404);
 });
 

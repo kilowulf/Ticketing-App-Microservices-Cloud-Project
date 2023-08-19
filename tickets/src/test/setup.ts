@@ -50,7 +50,8 @@ afterAll(async () => {
 globalCustom.signin = async () => {
   // build a JWT payload. {id, email}
   const payload = {
-    id: "3t44t4gw3",
+    // generate random id
+    id: new mongoose.Types.ObjectId().toHexString(),
     email: "test@test.com"
   };
 

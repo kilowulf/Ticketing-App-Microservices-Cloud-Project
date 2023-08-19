@@ -5,6 +5,8 @@ import cookieSession from "cookie-session";
 import { errorHandler, NotFoundError, currentUserSession } from "@qtiks/common";
 import { createTicketRouter } from "./routes/new-ticket";
 import { showTicketRouter } from "./routes/show-ticket";
+import { indexTicketRouter } from "./routes/index-ticket";
+import { updateTicketRouter } from "./routes/update-ticket";
 
 // 243 Reusable header
 // remember to delete kubernetes cluster in google cloud console or you will pay for the service
@@ -26,6 +28,8 @@ app.use(
 app.use(currentUserSession);
 app.use(createTicketRouter);
 app.use(showTicketRouter);
+app.use(indexTicketRouter);
+app.use(updateTicketRouter);
 // Handle bad routes
 app.all("*", async (req, res, next) => {
   next(new NotFoundError());

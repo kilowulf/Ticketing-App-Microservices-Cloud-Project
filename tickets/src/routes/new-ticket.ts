@@ -14,12 +14,14 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    console.log("Recieved request to create a new ticket");
     const { title, price } = req.body;
+    const userId = req.currentUser!.id;
 
     const ticket = Ticket.build({
       title,
       price,
-      userId: req.currentUser!.id
+      userId
     });
     await ticket.save();
 
