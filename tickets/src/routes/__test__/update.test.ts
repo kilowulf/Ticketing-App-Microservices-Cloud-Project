@@ -89,7 +89,7 @@ it("returns a 400 if the user provides an invalid title or price", async () => {
     .expect(400);
 });
 
-it("returns a 400 if the user provides an invalid title or price", async () => {
+it("updates ticket provided valid inputs", async () => {
   // authenticate user with valid session cookie
   const cookie = await globalCustom.signin();
 
@@ -102,6 +102,7 @@ it("returns a 400 if the user provides an invalid title or price", async () => {
       price: 23
     });
 
+  // find existing ticket and update it with new values
   await request(app)
     .put(`/api/tickets/${response.body.id}`)
     .set("Cookie", cookie)
@@ -111,6 +112,7 @@ it("returns a 400 if the user provides an invalid title or price", async () => {
     })
     .expect(200);
 
+  // confirm the ticket has been updated with new values
   const ticketResponse = await request(app)
     .get(`/api/tickets/${response.body.id}`)
     .send();

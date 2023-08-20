@@ -18,11 +18,13 @@ router.post(
     const { title, price } = req.body;
     const userId = req.currentUser!.id;
 
+    // call to our Ticket model build function: create a new Ticket
     const ticket = Ticket.build({
       title,
       price,
       userId
     });
+    // save ticket to collection
     await ticket.save();
 
     res.status(201).send(ticket);

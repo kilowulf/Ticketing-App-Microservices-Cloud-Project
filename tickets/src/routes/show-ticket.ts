@@ -5,6 +5,7 @@ import { Ticket } from "../models/ticket";
 const router = express.Router();
 
 router.get("/api/tickets/:id", async (req: Request, res: Response) => {
+  console.log("Recieved request to show a ticket by id");
   const ticket = await Ticket.findById(req.params.id);
   // check for ticket
   if (!ticket) {
