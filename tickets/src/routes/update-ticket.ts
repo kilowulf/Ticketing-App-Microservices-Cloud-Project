@@ -7,6 +7,8 @@ import {
   requireAuth
 } from "@qtiks/common";
 import { Ticket } from "../models/ticket";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -20,7 +22,7 @@ router.put(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    console.log("Receieved request to update a ticket");
+    console.log("Recieved request to update a ticket");
     const ticket = await Ticket.findById(req.params.id);
 
     // check if valid ticket exists
@@ -44,8 +46,14 @@ router.put(
     });
     // save to collection
     await ticket.save();
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId
+    });
 
-    res.send(ticket);
+    res.send(ticket).status(200);
   }
 );
 

@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@qtiks/common";
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -26,6 +28,15 @@ router.post(
     });
     // save ticket to collection
     await ticket.save();
+
+    // publish new ticket created event
+    await new TicketCreatedPublisher(natsWrapper.client).publish({
+      // pull from the ticket object rather than the request since data maybe different
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId
+    });
 
     res.status(201).send(ticket);
   }
