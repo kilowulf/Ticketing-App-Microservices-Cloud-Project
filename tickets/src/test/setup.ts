@@ -13,6 +13,8 @@ declare global {
   }
 }
 
+jest.mock("../nats-wrapper.ts");
+
 export const globalCustom: any = global;
 /**
  * MongoMemoryServer: allow for running instances for testing suites
@@ -23,10 +25,11 @@ let mongo: any;
 
 beforeAll(async () => {
   process.env.JWT_KEY = "asdfasdf";
-  mongo = new MongoMemoryServer();
-  await mongo.start();
-
-  const mongoUri = await mongo.getUri();
+  // mongo = new MongoMemoryServer();
+  // await mongo.start();
+  // const mongoUri = await mongo.getUri();
+  mongo = await MongoMemoryServer.create(); // use async create() method instead
+  const mongoUri = mongo.getUri(); // no longer an async method
 
   // Connect to the MongoMemoryServer
   await mongoose.connect(mongoUri);
@@ -34,16 +37,22 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   // Clear data from test collection
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (let collection of collections) {
     await collection.deleteMany({});
   }
-});
+}, 500000);
 
 afterAll(async () => {
-  await mongo.stop();
   await mongoose.connection.close();
+  await mongo.stop();
+
+  // await mongoose.connection.close();
+  // if (mongo) {
+  //   await mongo.stop();
+  // }
 });
 
 // custom global function for providing validation cookie for testing

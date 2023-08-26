@@ -32,6 +32,7 @@ app.use(indexTicketRouter);
 app.use(updateTicketRouter);
 // Handle bad routes
 app.all("*", async (req, res, next) => {
+  console.log("route failed");
   next(new NotFoundError());
 });
 

@@ -15,45 +15,46 @@ const router = express.Router();
 router.put(
   "/api/tickets/:id",
   requireAuth,
-
   [
     body("title").not().isEmpty().withMessage("Title is required"),
     body("price").isFloat({ gt: 0 }).withMessage("Price must be greater than 0")
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    console.log("Recieved request to update a ticket");
-    const ticket = await Ticket.findById(req.params.id);
+    console.log("Received request to update a ticket");
 
-    // check if valid ticket exists
-    if (!ticket) {
-      throw new NotFoundError();
+    try {
+      const ticket = await Ticket.findById(req.params.id);
+      console.log("Ticket found:", ticket);
+
+      if (!ticket) {
+        throw new NotFoundError();
+      }
+
+      if (ticket.userId !== req.currentUser!.id) {
+        throw new NotAuthorizedError();
+      }
+
+      ticket.set({
+        title: req.body.title,
+        price: req.body.price
+      });
+
+      await ticket.save();
+      console.log("Ticket updated:", ticket);
+
+      new TicketUpdatedPublisher(natsWrapper.client).publish({
+        id: ticket.id,
+        title: ticket.title,
+        price: ticket.price,
+        userId: ticket.userId
+      });
+
+      res.status(200).send(ticket);
+    } catch (error) {
+      console.error("Error while updating ticket:", error);
+      // Handle error accordingly
     }
-
-    //   if (ticket.orderId) {
-    //     throw new BadRequestError("Cannot edit a reserved ticket");
-    //   }
-
-    // authenticate ticket belongs to user
-    if (ticket.userId !== req.currentUser!.id) {
-      throw new NotAuthorizedError();
-    }
-
-    // update document data
-    ticket.set({
-      title: req.body.title,
-      price: req.body.price
-    });
-    // save to collection
-    await ticket.save();
-    new TicketUpdatedPublisher(natsWrapper.client).publish({
-      id: ticket.id,
-      title: ticket.title,
-      price: ticket.price,
-      userId: ticket.userId
-    });
-
-    res.send(ticket).status(200);
   }
 );
 
