@@ -23,12 +23,6 @@ class NatsWrapper {
       });
     });
   }
-
-  // disconnect() {
-  //   if (this._client) {
-  //     this._client.close();
-  //   }
-  // }
 }
 
 export const natsWrapper = new NatsWrapper();

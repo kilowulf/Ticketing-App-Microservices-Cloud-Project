@@ -26,6 +26,8 @@ router.put(
     try {
       const ticket = await Ticket.findById(req.params.id);
       console.log("Ticket found:", ticket);
+      console.log("Current user:", req.currentUser);
+      console.log("ticket id:", ticket?.id);
 
       if (!ticket) {
         throw new NotFoundError();
@@ -50,7 +52,7 @@ router.put(
         userId: ticket.userId
       });
 
-      res.status(200).send(ticket);
+      res.send(ticket);
     } catch (error) {
       console.error("Error while updating ticket:", error);
       // Handle error accordingly

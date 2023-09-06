@@ -6,16 +6,19 @@ import jwt from "jsonwebtoken";
 
 // Define a custom interface for the global object
 declare global {
-  namespace NodeJS {
-    interface Global {
-      signin(): Promise<string[]>;
-    }
-  }
+  var signin: () => string[];
 }
-
+// declare global {
+//   namespace NodeJS {
+//     interface Global {
+//       signin(): Promise<string[]>;
+//     }
+//   }
+// }
+jest.setTimeout(3000);
 jest.mock("../nats-wrapper.ts");
 
-export const globalCustom: any = global;
+// export const globalCustom: any = global;
 /**
  * MongoMemoryServer: allow for running instances for testing suites
  * - Direct Access to our MongoDB database
@@ -28,11 +31,11 @@ beforeAll(async () => {
   // mongo = new MongoMemoryServer();
   // await mongo.start();
   // const mongoUri = await mongo.getUri();
-  mongo = await MongoMemoryServer.create(); // use async create() method instead
+  const mongo = await MongoMemoryServer.create(); // use async create() method instead
   const mongoUri = mongo.getUri(); // no longer an async method
 
   // Connect to the MongoMemoryServer
-  await mongoose.connect(mongoUri);
+  await mongoose.connect(mongoUri, {});
 });
 
 beforeEach(async () => {
@@ -43,20 +46,19 @@ beforeEach(async () => {
   for (let collection of collections) {
     await collection.deleteMany({});
   }
-}, 500000);
+});
 
 afterAll(async () => {
-  await mongoose.connection.close();
-  await mongo.stop();
-
   // await mongoose.connection.close();
-  // if (mongo) {
-  //   await mongo.stop();
-  // }
+  // await mongo.stop();
+  if (mongo) {
+    await mongo.stop();
+  }
+  await mongoose.connection.close();
 });
 
 // custom global function for providing validation cookie for testing
-globalCustom.signin = async () => {
+global.signin = () => {
   // build a JWT payload. {id, email}
   const payload = {
     // generate random id
